@@ -210,4 +210,15 @@
    <arg path="${basedir}/build/code-browser" />
   </exec>
  </target>
+ 
+ <target name="package" description="package the application into a zpk">
+   <delete file="./pimcore.zpk" failonerror="false"/>
+   <exec executable="./zs-client.phar" failonerror="true">
+    <arg value="packZpk" />
+    <arg value="--folder=." />
+    <arg value="--destination=." />
+    <arg value="--name=pimcore.zpk" />
+    <arg value="--version=${env.PIPELINE_VERSION}" />
+  </exec>
+ </target>
 </project>
