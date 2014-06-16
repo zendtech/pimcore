@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<package xmlns="http://www.zend.com/server/deployment-descriptor/1.0" version="1.0">
+    <name>pimcore</name>
+    <summary>THE PREMIER OPEN-SOURCE MULTICHANNEL PLATFORM</summary>
+    <description>The premier Open-Source Multi-Channel Experience and Engagement Management Platform</description>
+    <version>
+        <release>2.0</release>
+    </version>
+    <icon>pimcore/static/img/logo-gray.png</icon>
+    <eula>pimcore/LICENSE.txt</eula>
+    <appdir>src</appdir>
+    <scriptsdir>scripts</scriptsdir>
+    <dependencies>
+    <required>
+      <php>
+        <min>5.4.0</min>
+      </php>
+      <extension>
+        <name>mcrypt</name>
+      </extension>
+      <extension>
+        <name>mysqli</name>
+      </extension>
+      <extension>
+        <name>iconv</name>
+      </extension>
+      <extension>
+        <name>dom</name>
+      </extension>
+      <extension>
+        <name>gd</name>
+      </extension>
+      <extension>
+        <name>mbstring</name>
+      </extension>
+      <extension>
+        <name>zlib</name>
+      </extension>
+      <extension>
+        <name>zip</name>
+      </extension>
+      <extension>
+        <name>bz2</name>
+      </extension>
+      <extension>
+        <name>openssl</name>
+      </extension>
+      <extension>
+        <name>imagick</name>
+      </extension>
+      <extension>
+        <name>soap</name>
+      </extension>
+      <extension>
+        <name>curl</name>
+      </extension>
+      <directive>
+        <name>memory_limit</name>
+        <min>256M</min>
+      </directive>
+      <zendservercomponent>
+        <name>Zend Optimizer+</name>
+      </zendservercomponent>
+      <zendframework>
+        <min>1.12.0</min>
+      </zendframework>
+    </required>
+  </dependencies>
+        <parameters>
+    <parameter display="MySql Host" id="mysql_host" readonly="false" required="true" type="string">
+      <defaultvalue>localhost</defaultvalue>
+      <description>If you're running Pimcore in Zend Dev Cloud the DB host name is &lt;mycontainer&gt;-db.my.phpcloud.com</description>
+    </parameter>
+    <parameter display="MySql Username" id="mysql_username" readonly="false" required="true" type="string">
+      <defaultvalue>root</defaultvalue>
+      <description>If you're running Pimcore in Zend Dev Cloud the DB username is &lt;mycontainer&gt;</description>
+    </parameter>
+    <parameter display="MySql Password" id="mysql_password" readonly="false" required="true" type="password">
+      <defaultvalue>1234</defaultvalue>
+      <description>If you're running Pimcore in Zend Dev Cloud the DB host name is your container password</description>
+    </parameter>
+    <parameter display="MySql Database Schema" id="mysql_database" readonly="false" required="true" type="string">
+      <defaultvalue>pimcore</defaultvalue>
+      <description>If you're running Pimcore in Zend Dev Cloud the DB schema name is &lt;mycontainer&gt;</description>
+    </parameter>
+    <parameter display="MySql Port" id="mysql_port" readonly="false" required="true" type="string">
+      <defaultvalue>3306</defaultvalue>
+    </parameter>
+    <parameter display="Pimcore Admin Username" id="admin_username" readonly="false" required="true" type="string">
+      <defaultvalue>admin</defaultvalue>
+    </parameter>
+    <parameter display="Pimcore Admin Password" id="admin_password" readonly="false" required="true" type="password">
+      <defaultvalue>admin</defaultvalue>
+    </parameter>
+    </parameters>
+</package>
