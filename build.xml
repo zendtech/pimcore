@@ -194,10 +194,10 @@
 </target>
 
  <target name="phpunit" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
-   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_USERNAME', ''/'PIMCORE_DATABASE_USERNAME', '${db.user}'/&quot; tests/TestConfiguration.php" /> 
-   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_PASSWORD', ''/'PIMCORE_DATABASE_PASSWORD', '${db.password}'/&quot; tests/TestConfiguration.php" /> 
-   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_DATABASE', ''/'PIMCORE_DATABASE_DATABASE', '${db.database}'/&quot; tests/TestConfiguration.php" /> 
-   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_HOSTNAME', ''/'PIMCORE_DATABASE_HOSTNAME', '${db.host}'/&quot; tests/TestConfiguration.php" />
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_USERNAME', ''/'PIMCORE_DATABASE_USERNAME', '${db.user}'/&quot; tests/config/testconfig.xml" /> 
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_PASSWORD', ''/'PIMCORE_DATABASE_PASSWORD', '${db.password}'/&quot; tests/config/testconfig.xml" /> 
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_DATABASE', ''/'PIMCORE_DATABASE_DATABASE', '${db.database}'/&quot; tests/config/testconfig.xml" /> 
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_HOSTNAME', ''/'PIMCORE_DATABASE_HOSTNAME', '${db.host}'/&quot; tests/config/testconfig.xml" />
    <exec executable="./phpunit.phar" failonerror="true" >
      <arg value="--debug"/>
    </exec>
