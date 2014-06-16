@@ -221,4 +221,17 @@
     <arg value="--version=${env.PIPELINE_VERSION}" />
   </exec>
  </target>
+ 
+ <target name="deploy">
+    <exec executable="./zs-client.phar" failonerror="true">
+      <arg value="installApp" />
+      <arg value="--zpk=./gotcms.zpk" />
+      <arg value="--target=${target}" />
+      <arg value="--baseUri=${base}" />
+      <arg value="--userAppName=${app}" />
+      <arg value="--userParams=mysql_host=${db.host}&amp;mysql_username=${db.user}&amp;mysql_password=${db.password}&amp;mysql_database=${db.database}&amp;mysql_port=${db.port}&amp;admin_username=${admin.user}&amp;admin_password=${admin.pass}" />
+      <arg value="--defaultServer=TRUE" />
+      <arg value="--wait" />
+    </exec>
+  </target>
 </project>
