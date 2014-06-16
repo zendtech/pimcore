@@ -194,6 +194,11 @@
 </target>
 
  <target name="phpunit" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_USERNAME', ''/'PIMCORE_DATABASE_USERNAME', '${db.user}'/&quot; tests/TestConfiguration.php" /> 
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_PASSWORD', ''/'PIMCORE_DATABASE_PASSWORD', '${db.password}'/&quot; tests/TestConfiguration.php" /> 
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_DATABASE', ''/'PIMCORE_DATABASE_DATABASE', '${db.database}'/&quot; tests/TestConfiguration.php" /> 
+   <exec command="sed -i &quot;s/'PIMCORE_DATABASE_HOSTNAME', ''/'PIMCORE_DATABASE_HOSTNAME', '${db.host}'/&quot; tests/TestConfiguration.php" />
+   <exec executable="./phpunit.phar" failonerror="true" >
      <exec executable="phpunit" failonerror="true">
          <arg value="--debug"/>
      </exec>
