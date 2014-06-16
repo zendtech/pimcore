@@ -199,9 +199,8 @@
    <exec command="sed -i &quot;s/'PIMCORE_DATABASE_DATABASE', ''/'PIMCORE_DATABASE_DATABASE', '${db.database}'/&quot; tests/TestConfiguration.php" /> 
    <exec command="sed -i &quot;s/'PIMCORE_DATABASE_HOSTNAME', ''/'PIMCORE_DATABASE_HOSTNAME', '${db.host}'/&quot; tests/TestConfiguration.php" />
    <exec executable="./phpunit.phar" failonerror="true" >
-     <exec executable="phpunit" failonerror="true">
-         <arg value="--debug"/>
-     </exec>
+     <arg value="--debug"/>
+   </exec>
  </target>
 
  <target name="phpcb"
