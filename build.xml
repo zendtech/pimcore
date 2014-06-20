@@ -193,7 +193,7 @@
     <mkdir dir="${basedir}/website/var/tmp"/>
 </target>
 
- <target name="phpunit" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
+ <target name="phpunit2" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
    <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml" /> 
    <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml" /> 
    <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml" /> 
@@ -202,6 +202,14 @@
      <arg value="--debug"/>
    </exec>
  </target>
+ 
+ <target name="phpunit" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
+   <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml" /> 
+   <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml" /> 
+   <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml" /> 
+   <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml" /> 
+ </target>
+
 
  <target name="phpcb"
          description="Aggregate tool output with PHP_CodeBrowser">
