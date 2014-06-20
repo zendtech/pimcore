@@ -53,6 +53,15 @@
   <mkdir dir="${basedir}/build/pdepend"/>
  </target>
 
+<target name="prepare_pdepend" 
+         description="Prepare for build">
+  <mkdir dir="${basedir}/build/api"/>
+  <mkdir dir="${basedir}/build/code-browser"/>
+  <mkdir dir="${basedir}/build/coverage"/>
+  <mkdir dir="${basedir}/build/logs"/>
+  <mkdir dir="${basedir}/build/pdepend"/>
+ </target>
+ 
  <target name="phpab" description="Generate autoloader scripts">
 
 
@@ -118,7 +127,7 @@
   </exec>
  </target>
  
-  <target name="pdepend" depends="prepare"
+  <target name="pdepend" depends="prepare_pdepend"
          description="Calculate software metrics using PHP_Depend">
  </target>
 
