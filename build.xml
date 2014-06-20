@@ -108,7 +108,7 @@
   </exec>
  </target>
 
- <target name="pdepend" depends="prepare"
+ <target name="pdepend2" depends="prepare"
          description="Calculate software metrics using PHP_Depend">
   <exec executable="pdepend">
    <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
@@ -116,6 +116,10 @@
    <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
    <arg path="${basedir}/pimcore" />
   </exec>
+ </target>
+ 
+  <target name="pdepend" depends="prepare"
+         description="Calculate software metrics using PHP_Depend">
  </target>
 
  <target name="phpmd"
