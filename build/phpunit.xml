@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false" bootstrap="../tests/bootstrap.php" strict="true" verbose="true">
+  <testsuites>
+    <testsuite name="Pimcore">
+      <directory>../tests</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <log target="coverage" type="coverage-html"/>
+    <log target="logs/clover.xml" type="coverage-clover"/>
+    <log target="logs/crap4j.xml" type="coverage-crap4j"/>
+    <log target="logs/junit.xml" type="junit"/>
+  </logging>
+</phpunit>

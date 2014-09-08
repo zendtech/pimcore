@@ -1,262 +1,214 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project name="pimcore-test" default="build">
- <target name="buildOld"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpunit,phpcb"/>
-
-
-
+<project default="build" name="pimcore-test">
+    <target depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpunit,phpcb" name="buildOld"/>
     <target name="move-phpdox">
         <move file="${basedir}/build/phpdox.xml.dist" tofile="${basedir}/phpdox.xml.dist"/>
     </target>
     <target name="move-no-coverage">
         <move file="${basedir}/build/phpunit-no-coverage.xml.dist" tofile="${basedir}/phpunit.xml.dist"/>
     </target>
-
-
-   <target name="build"
-   depends="prepare, phpunit, phploc, phpcpd,phpcb"/>
-
+    <target depends="prepare, phpunit, phploc, phpcpd,phpcb" name="build"/>
     <target name="dummy"/>
-
- <target name="build-parallel"
-   depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
-
- <target name="tools-parallel"
-         description="Run tools in parallel">
-  <parallel threadCount="2">
-   <sequential>
-    <antcall target="pdepend"/>
-    <antcall target="phpmd-ci"/>
-   </sequential>
-   <antcall target="phpcpd"/>
-   <antcall target="phpcs-ci"/>
-   <antcall target="phploc"/>
-  </parallel>
- </target>
-
- <target name="clean" description="Cleanup build artifacts">
-  <delete dir="${basedir}/build/api"/>
-  <delete dir="${basedir}/build/code-browser"/>
-  <delete dir="${basedir}/build/coverage"/>
-  <delete dir="${basedir}/build/logs"/>
-  <delete dir="${basedir}/build/pdepend"/>
-  <delete file="cache.properties"/>
- </target>
-
- <target name="prepare" depends="phpab"
-         description="Prepare for build">
-  <mkdir dir="${basedir}/build/api"/>
-  <mkdir dir="${basedir}/build/code-browser"/>
-  <mkdir dir="${basedir}/build/coverage"/>
-  <mkdir dir="${basedir}/build/logs"/>
-  <mkdir dir="${basedir}/build/pdepend"/>
- </target>
-
-<target name="prepare_pdepend" 
-         description="Prepare for build">
-  <mkdir dir="${basedir}/build/api"/>
-  <mkdir dir="${basedir}/build/code-browser"/>
-  <mkdir dir="${basedir}/build/coverage"/>
-  <mkdir dir="${basedir}/build/logs"/>
-  <mkdir dir="${basedir}/build/pdepend"/>
- </target>
- 
- <target name="phpab" description="Generate autoloader scripts">
-
-
-  <exec executable="phpab">
-   <arg value="--output" />
-   <arg path="${basedir}/tests/autoload.php" />
-   <arg path="${basedir}/tests" />
-  </exec>
- </target>
-
-<target name="replace-config" description="replaces the original testconfig with the one suitable for jenkins">
-    <copy file="${basedir}/tests/config/testconfig-jenkins-params.xml" tofile="${basedir}/tests/config/testconfig.xml" overwrite="true"/>
-</target>
-
- <target name="phar" description="Generate PHP Archive (PHAR)">
-  <exec executable="phpab">
-   <arg value="--phar" />
-   <arg value="--output" />
-   <arg path="${basedir}/build/kautbullinger.phar" />
-   <arg path="${basedir}/pimcore" />
-  </exec>
- </target>
-
- <target name="lint" depends="prepare">
-  <apply executable="php" failonerror="false">
-   <arg value="-l" />
-
-   <fileset dir="${basedir}/pimcore">
-    <include name="**/*.php" />
-	<exclude name="**/lib/**/*.php" />
-    <modified />
-   </fileset>
-   
-   <fileset dir="${basedir}/website">
-    <include name="**/*.php" />
-    <modified />
-   </fileset>
-   
-
-   <fileset dir="${basedir}/tests">
-    <include name="**/*.php" />
-    <exclude name="**/lib/**/*.php" />
-    <modified />
-   </fileset>
-  </apply>
- </target>
-
- <target name="phploc" description="Measure project size using PHPLOC">
-  <exec executable="phploc">
-   <arg value="--log-csv" />
-   <arg value="${basedir}/build/logs/phploc.csv" />
-   <arg path="${basedir}/pimcore" />
-  </exec>
- </target>
-
- <target name="pdepend2" depends="prepare"
-         description="Calculate software metrics using PHP_Depend">
-  <exec executable="pdepend">
-   <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
-   <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
-   <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-   <arg path="${basedir}/pimcore" />
-  </exec>
- </target>
- 
-  <target name="pdepend" depends="prepare_pdepend"
-         description="Calculate software metrics using PHP_Depend">
- </target>
-
- <target name="phpmd"
-         description="Perform project mess detection using PHPMD">
-  <exec executable="phpmd">
-   <arg path="${basedir}/pimcore" />
-   <arg value="text" />
-   <arg value="${basedir}/build/phpmd.xml" />
-  </exec>
- </target>
-
- <target name="phpmd-ci"
-         description="Perform project mess detection using PHPMD">
-  <exec executable="phpmd">
-   <arg path="${basedir}/pimcore" />
-   <arg value="xml" />
-   <arg value="${basedir}/build/phpmd.xml" />
-   <arg value="--reportfile" />
-   <arg value="${basedir}/build/logs/pmd.xml" />
-  </exec>
- </target>
-
- <target name="phpcs"
-         description="Find coding standard violations using PHP_CodeSniffer">
-  <exec executable="phpcs">
-   <arg value="--standard=${basedir}/build/phpcs.xml" />
-   <arg value="--ignore=autoload.php" />
-   <arg path="${basedir}/pimcore" />
-  </exec>
- </target>
-
- <target name="phpcs-ci"
-         description="Find coding standard violations using PHP_CodeSniffer">
-  <exec executable="phpcs" output="/dev/null">
-   <arg value="--report=checkstyle" />
-   <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
-   <arg value="--standard=${basedir}/build/phpcs.xml" />
-   <arg value="--ignore=autoload.php" />
-   <arg path="${basedir}/pimcore" />
-  </exec>
- </target>
-
- <target name="phpcpd" description="Find duplicate code using PHPCPD">
-  <exec executable="phpcpd">
-   <arg value="--log-pmd" />
-   <arg value="${basedir}/build/logs/pmd-cpd.xml" />
-      <arg value="--exclude" />
-      <arg value="pimcore/lib/Zend/" />
-      <arg value="--exclude" />
-      <arg value="pimcore/lib/PEAR/" />
-      <arg path="${basedir}/pimcore" />
-  </exec>
- </target>
-
-
-<target name="phpdox"
-         description="Generate API documentation using phpDox">
-    <exec executable="phpdoc">
-         <arg value="-t"/>
-        <arg value="phpdox"/>
-    </exec>
- </target>
-
-<target name="move-website">
-    <move file="${basedir}/website_example" tofile="${basedir}/website"/>
-    <move file="${basedir}/plugins_example" tofile="${basedir}/plugins"/>
-</target>
-
-
-
-
-<target name="prepare-dirs" description="Creates website directories">
-    <mkdir dir="${basedir}/website/var/cache"/>
-    <mkdir dir="${basedir}/website/var/system"/>
-    <mkdir dir="${basedir}/website/var/tmp"/>
-</target>
-
- <target name="phpunit2" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
-   <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml" /> 
-   <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml" /> 
-   <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml" /> 
-   <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml" /> 
-   <exec executable="./phpunit.phar" failonerror="true" >
-     <arg value="--debug"/>
-   </exec>
- </target>
- 
- <target name="phpunit" depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit">
-   <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml" /> 
-   <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml" /> 
-   <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml" /> 
-   <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml" /> 
- </target>
-
-
- <target name="phpcb"
-         description="Aggregate tool output with PHP_CodeBrowser">
-  <exec executable="phpcb">
-   <arg value="--log" />
-   <arg path="${basedir}/build/logs" />
-   <arg value="--source" />
-   <arg path="${basedir}/pimcore" />
-   <arg value="--output" />
-   <arg path="${basedir}/build/code-browser" />
-  </exec>
- </target>
- 
- <target name="package" description="package the application into a zpk">
-   <delete file="./pimcore.zpk" failonerror="false"/>
-   <exec executable="./zs-client.phar" failonerror="true">
-    <arg value="packZpk" />
-    <arg value="--folder=." />
-    <arg value="--destination=." />
-    <arg value="--name=pimcore.zpk" />
-    <arg value="--version=${env.PIPELINE_VERSION}" />
-  </exec>
- </target>
- 
- <target name="deploy">
-    <exec executable="./zs-client.phar" failonerror="true">
-      <arg value="installApp" />
-      <arg value="--zpk=./gotcms.zpk" />
-      <arg value="--target=${target}" />
-      <arg value="--baseUri=${base}" />
-      <arg value="--userAppName=${app}" />
-      <arg value="--userParams=mysql_host=${db.host}&amp;mysql_username=${db.user}&amp;mysql_password=${db.password}&amp;mysql_database=${db.database}&amp;mysql_port=${db.port}&amp;admin_username=${admin.user}&amp;admin_password=${admin.pass}" />
-      <arg value="--defaultServer=TRUE" />
-      <arg value="--wait" />
-    </exec>
-  </target>
+    <target depends="prepare,lint,tools-parallel,phpunit,phpcb" name="build-parallel"/>
+    <target description="Run tools in parallel" name="tools-parallel">
+        <parallel threadCount="2">
+            <sequential>
+                <antcall target="pdepend"/>
+                <antcall target="phpmd-ci"/>
+            </sequential>
+            <antcall target="phpcpd"/>
+            <antcall target="phpcs-ci"/>
+            <antcall target="phploc"/>
+        </parallel>
+    </target>
+    <target description="Cleanup build artifacts" name="clean">
+        <delete dir="${basedir}/build/api"/>
+        <delete dir="${basedir}/build/code-browser"/>
+        <delete dir="${basedir}/build/coverage"/>
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
+        <delete file="cache.properties"/>
+    </target>
+    <target depends="phpab" description="Prepare for build" name="prepare">
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/code-browser"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+    </target>
+    <target description="Prepare for build" name="prepare_pdepend">
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/code-browser"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+    </target>
+    <target description="Generate autoloader scripts" name="phpab">
+        <exec executable="phpab">
+            <arg value="--output"/>
+            <arg path="${basedir}/tests/autoload.php"/>
+            <arg path="${basedir}/tests"/>
+        </exec>
+    </target>
+    <target description="replaces the original testconfig with the one suitable for jenkins" name="replace-config">
+        <copy file="${basedir}/tests/config/testconfig-jenkins-params.xml" overwrite="true" tofile="${basedir}/tests/config/testconfig.xml"/>
+    </target>
+    <target description="Generate PHP Archive (PHAR)" name="phar">
+        <exec executable="phpab">
+            <arg value="--phar"/>
+            <arg value="--output"/>
+            <arg path="${basedir}/build/kautbullinger.phar"/>
+            <arg path="${basedir}/pimcore"/>
+        </exec>
+    </target>
+    <target depends="prepare" name="lint">
+        <apply executable="php" failonerror="false">
+            <arg value="-l"/>
+            <fileset dir="${basedir}/pimcore">
+                <include name="**/*.php"/>
+                <exclude name="**/lib/**/*.php"/>
+                <modified/>
+            </fileset>
+            <fileset dir="${basedir}/website">
+                <include name="**/*.php"/>
+                <modified/>
+            </fileset>
+            <fileset dir="${basedir}/tests">
+                <include name="**/*.php"/>
+                <exclude name="**/lib/**/*.php"/>
+                <modified/>
+            </fileset>
+        </apply>
+    </target>
+    <target description="Measure project size using PHPLOC" name="phploc">
+        <exec executable="phploc">
+            <arg value="--log-csv"/>
+            <arg value="${basedir}/build/logs/phploc.csv"/>
+            <arg path="${basedir}/pimcore"/>
+        </exec>
+    </target>
+    <target depends="prepare" description="Calculate software metrics using PHP_Depend" name="pdepend2">
+        <exec executable="pdepend">
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml"/>
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg"/>
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg"/>
+            <arg path="${basedir}/pimcore"/>
+        </exec>
+    </target>
+    <target depends="prepare_pdepend" description="Calculate software metrics using PHP_Depend" name="pdepend"/>
+    <target description="Perform project mess detection using PHPMD" name="phpmd">
+        <exec executable="phpmd">
+            <arg path="${basedir}/pimcore"/>
+            <arg value="text"/>
+            <arg value="${basedir}/build/phpmd.xml"/>
+        </exec>
+    </target>
+    <target description="Perform project mess detection using PHPMD" name="phpmd-ci">
+        <exec executable="phpmd">
+            <arg path="${basedir}/pimcore"/>
+            <arg value="xml"/>
+            <arg value="${basedir}/build/phpmd.xml"/>
+            <arg value="--reportfile"/>
+            <arg value="${basedir}/build/logs/pmd.xml"/>
+        </exec>
+    </target>
+    <target description="Find coding standard violations using PHP_CodeSniffer" name="phpcs">
+        <exec executable="phpcs">
+            <arg value="--standard=${basedir}/build/phpcs.xml"/>
+            <arg value="--ignore=autoload.php"/>
+            <arg path="${basedir}/pimcore"/>
+        </exec>
+    </target>
+    <target description="Find coding standard violations using PHP_CodeSniffer" name="phpcs-ci">
+        <exec executable="phpcs" output="/dev/null">
+            <arg value="--report=checkstyle"/>
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml"/>
+            <arg value="--standard=${basedir}/build/phpcs.xml"/>
+            <arg value="--ignore=autoload.php"/>
+            <arg path="${basedir}/pimcore"/>
+        </exec>
+    </target>
+    <target description="Find duplicate code using PHPCPD" name="phpcpd">
+        <exec executable="phpcpd">
+            <arg value="--log-pmd"/>
+            <arg value="${basedir}/build/logs/pmd-cpd.xml"/>
+            <arg value="--exclude"/>
+            <arg value="pimcore/lib/Zend/"/>
+            <arg value="--exclude"/>
+            <arg value="pimcore/lib/PEAR/"/>
+            <arg path="${basedir}/pimcore"/>
+        </exec>
+    </target>
+    <target description="Generate API documentation using phpDox" name="phpdox">
+        <exec executable="phpdoc">
+            <arg value="-t"/>
+            <arg value="phpdox"/>
+        </exec>
+    </target>
+    <target name="move-website">
+        <move file="${basedir}/website_example" tofile="${basedir}/website"/>
+        <move file="${basedir}/plugins_example" tofile="${basedir}/plugins"/>
+    </target>
+    <target description="Creates website directories" name="prepare-dirs">
+        <mkdir dir="${basedir}/website/var/cache"/>
+        <mkdir dir="${basedir}/website/var/system"/>
+        <mkdir dir="${basedir}/website/var/tmp"/>
+    </target>
+    <target depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit" name="phpunit2">
+        <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
+        <exec executable="./phpunit.phar" failonerror="true">
+            <arg value="--debug"/>
+        </exec>
+    </target> 
+    <target depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit" name="phpunit-cdinabox">
+        <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
+        <exec executable="./phpunit.phar" failonerror="true">
+            <arg value="--configuration"/>
+            <arg path="${basedir}/build/phpunit.xml"/>
+        </exec>
+    </target>
+    <target depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit" name="phpunit">
+        <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml"/>
+        <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
+    </target>
+    <target description="Aggregate tool output with PHP_CodeBrowser" name="phpcb">
+        <exec executable="phpcb">
+            <arg value="--log"/>
+            <arg path="${basedir}/build/logs"/>
+            <arg value="--source"/>
+            <arg path="${basedir}/pimcore"/>
+            <arg value="--output"/>
+            <arg path="${basedir}/build/code-browser"/>
+        </exec>
+    </target>
+    <target description="package the application into a zpk" name="package">
+        <delete failonerror="false" file="./pimcore.zpk"/>
+        <exec executable="./zs-client.phar" failonerror="true">
+            <arg value="packZpk"/>
+            <arg value="--folder=."/>
+            <arg value="--destination=."/>
+            <arg value="--name=pimcore.zpk"/>
+            <arg value="--version=${env.PIPELINE_VERSION}"/>
+        </exec>
+    </target>
+    <target name="deploy">
+        <exec executable="./zs-client.phar" failonerror="true">
+            <arg value="installApp"/>
+            <arg value="--zpk=./gotcms.zpk"/>
+            <arg value="--target=${target}"/>
+            <arg value="--baseUri=${base}"/>
+            <arg value="--userAppName=${app}"/>
+            <arg value="--userParams=mysql_host=${db.host}&amp;mysql_username=${db.user}&amp;mysql_password=${db.password}&amp;mysql_database=${db.database}&amp;mysql_port=${db.port}&amp;admin_username=${admin.user}&amp;admin_password=${admin.pass}"/>
+            <arg value="--defaultServer=TRUE"/>
+            <arg value="--wait"/>
+        </exec>
+    </target>
 </project>
