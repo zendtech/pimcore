@@ -170,10 +170,6 @@
         <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
     </target>
     <target depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit" name="phpunit-cdinabox">
-        <exec command="sed -i s/PIMCORE_DATABASE_USERNAME/${db.user}/ tests/config/testconfig.xml"/>
-        <exec command="sed -i s/PIMCORE_DATABASE_PASSWORD/${db.password}/ tests/config/testconfig.xml"/>
-        <exec command="sed -i s/PIMCORE_DATABASE_DATABASE/${db.database}/ tests/config/testconfig.xml"/>
-        <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
         <exec executable="/usr/bin/phpunit" failonerror="true">
             <arg value="--configuration"/>
             <arg path="${basedir}/build/phpunit.xml"/>
