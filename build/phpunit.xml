@@ -2,7 +2,7 @@
 <phpunit backupGlobals="false" bootstrap="../tests/bootstrap.php" strict="true" verbose="true">
   <testsuites>
     <testsuite name="Pimcore">
-      <directory>../tests</directory>
+      <file>tests/MassiTest.php</file>
     </testsuite>
   </testsuites>
   <logging>
