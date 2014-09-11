@@ -170,9 +170,13 @@
         <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
     </target>
     <target depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit" name="phpunit-cdinabox">
-        <exec executable="/usr/bin/phpunit" failonerror="true">
-            <arg value="--configuration"/>
-            <arg path="${basedir}/build/phpunit.xml"/>
+        <exec executable="/usr/bin/phpunit tests/MassiTest.php" failonerror="true">
+            <arg value="--coverage-clover"/>
+            <arg path="${basedir}/build/logs/clover.xml"/>
+            <arg value="--coverage-crap4j"/>
+            <arg path="${basedir}/build/logs/crap4j.xml"/>
+            <arg value="--log-junit"/>
+            <arg path="${basedir}/build/logs/junit.xml"/>
         </exec>
     </target>
     <target description="Aggregate tool output with PHP_CodeBrowser" name="phpcb">
