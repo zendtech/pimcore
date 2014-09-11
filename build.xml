@@ -170,7 +170,7 @@
         <exec command="sed -i s/PIMCORE_DATABASE_HOSTNAME/${db.host}/ tests/config/testconfig.xml"/>
     </target>
     <target depends="prepare-dirs,replace-config" description="Run unit tests with PHPUnit" name="phpunit-cdinabox">
-        <exec executable="/usr/bin/phpunit tests/MassiTest.php" failonerror="true">
+        <exec executable="/usr/bin/phpunit ${basedir}/tests/MassiTest.php" failonerror="true">
             <arg value="--coverage-clover"/>
             <arg path="${basedir}/build/logs/clover.xml"/>
             <arg value="--coverage-crap4j"/>
